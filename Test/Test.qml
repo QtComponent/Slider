@@ -1,14 +1,23 @@
 import QtQuick 2.5
-import QtQuick.Controls 1.4
+import "../"
 
-Slider {
-    maximumValue: 5.0
-    stepSize: 1.0
-    onValueChanged: {
-        console.log("Value: ", value)
+Rectangle {
+    Slider {
+        anchors.centerIn: parent
+
+        stepSize: 1.0
+        onValueChanged: {
+            console.log("Value: ", value)
+        }
     }
 
-    onStepSizeChanged: {
-        console.log("SetpSize: ", stepSize)
+    Slider {
+        x: 50
+        anchors.verticalCenter: parent.verticalCenter
+        orientation: Qt.Vertical
+        stepSize: 1.0
+        onValueChanged: {
+            console.log("Value: ", value)
+        }
     }
 }

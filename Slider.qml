@@ -4,6 +4,7 @@ Item {
     id: root
     width: _private.defaultWidth
     height: _private.defaultHeight
+    rotation: orientation === Qt.Vertical ? 180 : 0
 
     /* public */
     property real value
@@ -19,25 +20,22 @@ Item {
      */
     property real position: 0.0
 
-    onValueChanged: console.log("Value: ", value)
-    onPositionChanged: console.log("Position: ", position)
-
     /* path */
     Rectangle {
         id: path
         anchors.centerIn: parent
-        implicitWidth:  orientation === Qt.Vertical ? _private.pathRadius : root.width * 0.85
-        implicitHeight: orientation === Qt.Vertical ? root.height * 0.85 : _private.pathRadius
+        implicitWidth:  orientation === Qt.Vertical ? _private.pathRadius : root.width * _private.pathScale
+        implicitHeight: orientation === Qt.Vertical ? root.height * _private.pathScale : _private.pathRadius
         radius: 2
         color: "#bdbebf"
 
         /* handle */
         Rectangle {
             id: handle
-            x: orientation === Qt.Vertical ? (parent.width - width) / 2 : parent.width*value/to
-            y: orientation === Qt.Vertical ? parent.height*value/to : (parent.height - height) / 2
-            implicitWidth: orientation === Qt.Vertical ? root.width * 3 / 5 : root.height * 3 / 5
-            implicitHeight: width
+            x: orientation === Qt.Vertical ? (parent.width - implicitWidth)/2 : (parent.width*value/to) - implicitWidth/2
+            y: orientation === Qt.Vertical ? (parent.height*value/to) - implicitWidth/2 : (parent.height - implicitHeight)/2
+            implicitWidth: _private.handleRadius
+            implicitHeight: implicitWidth
             radius: width / 2
             color: mouseArea.pressed ? "#f0f0f0" : "#f6f6f6"
             border.color: "#bdbebf"
@@ -75,22 +73,29 @@ Item {
         id: _private
         property real availableWidth: 0
         property real pathRadius: orientation === Qt.Vertical ? root.width * 2 / 15 : root.height * 2 / 15
-        property real defaultWidth: orientation === Qt.Vertical ? 30 : 180
-        property real defaultHeight: orientation === Qt.Vertical ? 180 : 30
+        property real handleRadius: orientation === Qt.Vertical ? root.width * 3 / 5 : root.height * 3 / 5
+        property real pathScale: 0.85
+        property real defaultWidth: orientation === Qt.Vertical ? 50 : 280
+        property real defaultHeight: orientation === Qt.Vertical ? 280 : 50
 
         function adjustPosition(mouseArea) {
             var _path = 0
             var _mouseValue = 0
+            var _rootValue = 0
+
             if (orientation === Qt.Vertical) {
                 _path = path.height
                 _mouseValue = mouseArea.mouseY
+                _rootValue = root.height
             }
             else {
                 _path = path.width
                 _mouseValue = mouseArea.mouseX
+                _rootValue = root.width
             }
 
-            var _value = to * _mouseValue / _path
+            var _value = (to * (_mouseValue - (_rootValue - _path)/2) / _path)
+
             if (_value >= to) {
                 return 1.0
             }
