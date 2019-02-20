@@ -7,11 +7,11 @@ Item {
     rotation: orientation === Qt.Vertical ? 180 : 0
 
     /* public */
-    property real value
     property real to: 100
     property real from: 0
+    property real value
+    property real stepSize: 0.1
     property int  orientation: Qt.Horizontal // [Qt.Horizontal | Qt.Vertical]
-    property real stepSize: 1
     /** [read-only] position
      * This property holds the logical position of the handle.
      * The position is defined as a percentage of the control's size, scaled from 0.0 - 1.0.
@@ -24,18 +24,52 @@ Item {
     Rectangle {
         id: path
         anchors.centerIn: parent
-        implicitWidth:  orientation === Qt.Vertical ? _private.pathRadius : root.width * _private.pathScale
-        implicitHeight: orientation === Qt.Vertical ? root.height * _private.pathScale : _private.pathRadius
+        width:  orientation === Qt.Vertical ? _private.pathRadius : root.width * _private.pathScale
+        height: orientation === Qt.Vertical ? root.height * _private.pathScale : _private.pathRadius
         radius: 2
         color: "#bdbebf"
 
         /* handle */
         Rectangle {
             id: handle
-            x: orientation === Qt.Vertical ? (parent.width - implicitWidth)/2 : (parent.width*value/to) - implicitWidth/2
-            y: orientation === Qt.Vertical ? (parent.height*value/to) - implicitWidth/2 : (parent.height - implicitHeight)/2
-            implicitWidth: _private.handleRadius
-            implicitHeight: implicitWidth
+            x: getX(value)
+            y: getY(value)
+
+            function getX(value) {
+                if (orientation === Qt.Horizontal) {
+                    if (((parent.width*value/to) - width/2) <= 0) {
+                        return 0
+                    }
+                    else if (((parent.width*value/to) + width/2) >= parent.width) {
+                        return parent.width - width
+                    }
+                    else {
+                        return ((parent.width*value/to) - width/2)
+                    }
+                }
+                else {
+                    return (parent.width - width)/2
+                }
+            }
+
+            function getY(value) {
+                if (orientation === Qt.Vertical) {
+                    if (((parent.height*value/to) - height/2) <= 0) {
+                        return 0
+                    }
+                    else if (((parent.height*value/to) + height/2) >= parent.height) {
+                        return parent.height - height
+                    }
+                    else {
+                        return ((parent.height*value/to) - height/2)
+                    }
+                }
+                else {
+                    return (parent.height - height)/2
+                }
+            }
+            width: _private.handleRadius
+            height: width
             radius: width / 2
             color: mouseArea.pressed ? "#f0f0f0" : "#f6f6f6"
             border.color: "#bdbebf"
@@ -43,8 +77,8 @@ Item {
 
         /* available rectangle */
         Rectangle {
-            width: orientation === Qt.Horizontal ? handle.x : parent.implicitWidth
-            height: orientation === Qt.Vertical ? handle.y : parent.implicitHeight
+            width: orientation === Qt.Horizontal ? handle.x : parent.width
+            height: orientation === Qt.Vertical ? handle.y : parent.height
             radius: parent.radius
             color: "#21be2b"
         }
@@ -74,7 +108,7 @@ Item {
         property real availableWidth: 0
         property real pathRadius: orientation === Qt.Vertical ? root.width * 2 / 15 : root.height * 2 / 15
         property real handleRadius: orientation === Qt.Vertical ? root.width * 3 / 5 : root.height * 3 / 5
-        property real pathScale: 0.85
+        property real pathScale: 1
         property real defaultWidth: orientation === Qt.Vertical ? 50 : 280
         property real defaultHeight: orientation === Qt.Vertical ? 280 : 50
 
@@ -94,7 +128,7 @@ Item {
                 _rootValue = root.width
             }
 
-            var _value = (to * (_mouseValue - (_rootValue - _path)/2) / _path)
+            var _value = (to * _mouseValue / _path)
 
             if (_value >= to) {
                 return 1.0
