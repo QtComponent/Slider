@@ -39,7 +39,6 @@ Item {
     // This property holds the background item.
     property Component background: _private.defaultBackground
 
-
     // Decreases the value by stepSize or 0.1 if stepSize is not defined.
     function decrease() {
         var _stepSize = stepSize === 0 ? 0.1 : stepSize

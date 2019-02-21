@@ -68,6 +68,7 @@ Rectangle {
             /* handle is rectangle */
             My.Slider {
                 id: slider4
+                to: 100
 
                 handle: Rectangle {
                     width: 20
@@ -92,7 +93,7 @@ Rectangle {
 
                     /* available rectangle */
                     Rectangle {
-                        width:  slider4.value/slider.to*parent.width
+                        width:  slider4.value/slider4.to*parent.width
                         height: parent.height
                         radius: parent.radius
                         color: "lightblue"
