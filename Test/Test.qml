@@ -3,7 +3,9 @@ import "../" as My
 
 Rectangle {
     width: 180; height: 30
+
     My.Slider {
+        id: slider
         anchors.centerIn: parent
 
         stepSize: 1.0
@@ -18,16 +20,20 @@ Rectangle {
             color: parent.pressed ? "#f0f0f0" : "#f6f6f6"
             border.color: "#bdbebf"
         }
-    }
 
-//    My.Slider {
-//        x: 50
-//        anchors.verticalCenter: parent.verticalCenter
-//        orientation: Qt.Vertical
-//        stepSize: 1.0
-//        onPositionChanged: console.log(position)
-//        onValueChanged: {
-//            console.log("Value: ", value)
-//        }
-//    }
+        background: Rectangle {
+            width: slider.width
+            height: 5
+            radius: 2
+            color: "#bdbebf"
+
+            /* available rectangle */
+            Rectangle {
+                width:  slider.value/slider.to*parent.width
+                height: parent.height
+                radius: parent.radius
+                color: "#21be2b"
+            }
+        }
+    }
 }
