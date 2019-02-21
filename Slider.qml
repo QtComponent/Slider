@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 1.0
 
 Item {
     id: root
@@ -9,9 +9,9 @@ Item {
     /* public */
     property real to: 100
     property real from: 0
-    property real value
-    property real stepSize: 0.1
-    property int  orientation: Qt.Horizontal // [Qt.Horizontal | Qt.Vertical]
+    property real value: 0.0
+    property real stepSize: 1
+    property int  orientation: Qt.Horizontal // note: [Qt.Horizontal | Qt.Vertical]
     property real position: 0.0 // note: [read-only]
     property bool pressed: false
 
