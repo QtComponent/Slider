@@ -4,7 +4,7 @@ Item {
     id: root
     width: _private.defaultWidth
     height: _private.defaultHeight
-    rotation: orientation === Qt.Vertical ? 180 : 0
+//    rotation: orientation === Qt.Vertical ? 180 : 0
 
     /* public */
     property real to: 100
@@ -19,66 +19,35 @@ Item {
      * For visualizing a slider, the right-from-left aware visualPosition should be used instead.
      */
     property real position: 0.0
+    property bool pressed: false
+
+    property Component handle: Rectangle {
+        width: _private.handleRadius
+        height: width
+        radius: width / 2
+        color: root.pressed ? "#f0f0f0" : "#f6f6f6"
+        border.color: "#bdbebf"
+    }
 
     /* path */
     Rectangle {
         id: path
         anchors.centerIn: parent
-        width:  orientation === Qt.Vertical ? _private.pathRadius : root.width * _private.pathScale
-        height: orientation === Qt.Vertical ? root.height * _private.pathScale : _private.pathRadius
+        width:  orientation === Qt.Horizontal ? root.width  : _private.pathRadius
+        height: orientation === Qt.Vertical   ? root.height : _private.pathRadius
         radius: 2
         color: "#bdbebf"
 
-        /* handle */
-        Rectangle {
-            id: handle
-            x: getX(value)
-            y: getY(value)
-
-            function getX(value) {
-                if (orientation === Qt.Horizontal) {
-                    if (((parent.width*value/to) - width/2) <= 0) {
-                        return 0
-                    }
-                    else if (((parent.width*value/to) + width/2) >= parent.width) {
-                        return parent.width - width
-                    }
-                    else {
-                        return ((parent.width*value/to) - width/2)
-                    }
-                }
-                else {
-                    return (parent.width - width)/2
-                }
-            }
-
-            function getY(value) {
-                if (orientation === Qt.Vertical) {
-                    if (((parent.height*value/to) - height/2) <= 0) {
-                        return 0
-                    }
-                    else if (((parent.height*value/to) + height/2) >= parent.height) {
-                        return parent.height - height
-                    }
-                    else {
-                        return ((parent.height*value/to) - height/2)
-                    }
-                }
-                else {
-                    return (parent.height - height)/2
-                }
-            }
-            width: _private.handleRadius
-            height: width
-            radius: width / 2
-            color: mouseArea.pressed ? "#f0f0f0" : "#f6f6f6"
-            border.color: "#bdbebf"
+         /* handle */
+        Loader {
+            id: handleId
+            sourceComponent: root.handle
         }
 
         /* available rectangle */
         Rectangle {
-            width: orientation === Qt.Horizontal ? handle.x : parent.width
-            height: orientation === Qt.Vertical ? handle.y : parent.height
+            width: orientation === Qt.Horizontal ? handleId.x : parent.width
+            height: orientation === Qt.Vertical ? handleId.y : parent.height
             radius: parent.radius
             color: "#21be2b"
         }
@@ -86,15 +55,14 @@ Item {
 
     MouseArea {
         id: mouseArea
-        property bool pressed: false
         anchors.fill: parent
-        onPressed: pressed = true
+        onPressed: root.pressed = true
         onReleased: {
-            pressed = false
+            root.pressed = false
             root.position = _private.adjustPosition(mouseArea)
         }
         onPositionChanged: {
-            if (pressed) {
+            if (root.pressed) {
                 value = _private.adjustValue(mouseArea)
             }
         }
@@ -103,14 +71,29 @@ Item {
         }
     }
 
+    onValueChanged: {
+        if (! root.pressed)
+            position = value/to
+
+        if (value > to)
+            value = to
+
+        if (value < from)
+            value = from
+
+        _private.setHandlePosition(value)
+    }
+
+    Component.onCompleted: _private.setHandlePosition(value)
+
     QtObject {
         id: _private
         property real availableWidth: 0
         property real pathRadius: orientation === Qt.Vertical ? root.width * 2 / 15 : root.height * 2 / 15
         property real handleRadius: orientation === Qt.Vertical ? root.width * 3 / 5 : root.height * 3 / 5
         property real pathScale: 1
-        property real defaultWidth: orientation === Qt.Vertical ? 50 : 280
-        property real defaultHeight: orientation === Qt.Vertical ? 280 : 50
+        property real defaultWidth:  orientation === Qt.Horizontal ? 150 : 30
+        property real defaultHeight: orientation === Qt.Vertical ? 150 : 30
 
         function adjustPosition(mouseArea) {
             var _path = 0
@@ -146,6 +129,45 @@ Item {
 
         function adjustValue(mouseArea) {
             return adjustPosition(mouseArea)*to
+        }
+
+        function getX(value) {
+            if (orientation === Qt.Horizontal) {
+                if (((path.width*value/to) - handleId.width/2) <= 0) {
+                    return 0
+                }
+                else if (((path.width*value/to) + handleId.width/2) >= path.width) {
+                    return path.width - handleId.width
+                }
+                else {
+                    return ((path.width*value/to) - handleId.width/2)
+                }
+            }
+            else {
+                return (path.width - handleId.width)/2
+            }
+        }
+
+        function getY(value) {
+            if (orientation === Qt.Vertical) {
+                if (((path.height*value/to) - handleId.height/2) <= 0) {
+                    return 0
+                }
+                else if (((path.height*value/to) + handleId.height/2) >= path.height) {
+                    return path.height - handleId.height
+                }
+                else {
+                    return ((path.height*value/to) - handleId.height/2)
+                }
+            }
+            else {
+                return (path.height - handleId.height)/2
+            }
+        }
+
+        function setHandlePosition(value) {
+            handleId.x = _private.getX(value)
+            handleId.y =  _private.getY(value)
         }
     }
 }
