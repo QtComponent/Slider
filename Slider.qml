@@ -131,22 +131,22 @@ Item {
         }
 
         function adjustPosition(mouseArea) {
-            var _backgroundId = 0
+            var _backgroundIdValue = 0
             var _mouseValue = 0
             var _rootValue = 0
 
             if (orientation === Qt.Vertical) {
-                _backgroundId = backgroundId.height
+                _backgroundIdValue = backgroundId.height
                 _mouseValue = mouseArea.mouseY
                 _rootValue = root.height
             }
             else {
-                _backgroundId = backgroundId.width
+                _backgroundIdValue = backgroundId.width
                 _mouseValue = mouseArea.mouseX
                 _rootValue = root.width
             }
 
-            var _value = (to * _mouseValue / _backgroundId)
+            var _value = (to * _mouseValue / _backgroundIdValue)
 
             if (_value >= to) {
                 return 1.0
@@ -155,11 +155,13 @@ Item {
                 return 0.0
             }
             else {
-                var _stepSize = stepSize === 0 ? 0.1 : stepSize
-                if (_value % _stepSize >= (_stepSize / 2))
-                    return (Math.floor(_value / _stepSize) + 1) * _stepSize/to
+                if (stepSize === 0)
+                    return _value/to
+
+                if (_value % stepSize >= (stepSize / 2))
+                    return (Math.floor(_value / stepSize) + 1) * stepSize/to
                 else
-                    return Math.floor(_value / _stepSize) * _stepSize/to
+                    return Math.floor(_value / stepSize) * stepSize/to
             }
         }
 

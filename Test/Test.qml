@@ -105,7 +105,7 @@ Rectangle {
         My.Slider {
             id: slider5
             orientation: Qt.Vertical
-
+            stepSize: 0.2
             handle: Rectangle {
                 width: 13
                 height: 20
