@@ -13,6 +13,9 @@ Rectangle {
             /* Default Slider */
             My.Slider {
                 id: slider
+                focus: true
+                Keys.onDownPressed: slider.decrease()
+                Keys.onUpPressed: slider.increase()
             }
 
             /* Slider with a red background  */
@@ -124,6 +127,5 @@ Rectangle {
                 }
             }
         }
-
     }
 }

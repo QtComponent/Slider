@@ -7,17 +7,52 @@ Item {
     rotation: orientation === Qt.Vertical ? 180 : 0
 
     /* public */
-    property real to: 100
-    property real from: 0
+    // This property holds the starting value for the range. The default value is 0.0.
+    property real from: 0.0
+
+    // This property holds the end value for the range. The default value is 1.0.
+    property real to: 1.0
+
+    // This property holds the value in the range from - to. The default value is 0.0.
+    // Unlike the position property, the value is not updated while the handle is dragged. The value is updated after the value has been chosen and the slider has been released.
     property real value: 0.0
-    property real stepSize: 1
-    property int  orientation: Qt.Horizontal // note: [Qt.Horizontal | Qt.Vertical]
+
+    // This property holds the step size. The default value is 0.0.
+    property real stepSize: 0
+
+    // This property holds the orientation.
+    // note: [Qt.Horizontal(default) | Qt.Vertical]
+    property int  orientation: Qt.Horizontal
+
+    // This property holds the logical position of the handle.
+    // The position is defined as a percentage of the control's size, scaled to 0.0 - 1.0.
+    // Unlike the value property, the position is continuously updated while the handle is dragged.
+    // For visualizing a slider, the right-to-left aware visualPosition should be used instead.
     property real position: 0.0 // note: [read-only]
+
+    // This property holds whether the slider is pressed.
     property bool pressed: false
 
+    // This property holds the handle item.
     property Component handle: _private.defaultHandle
+
+    // This property holds the background item.
     property Component background: _private.defaultBackground
 
+
+    // Decreases the value by stepSize or 0.1 if stepSize is not defined.
+    function decrease() {
+        var _stepSize = stepSize === 0 ? 0.1 : stepSize
+        value -= _stepSize
+    }
+
+    // Increases the value by stepSize or 0.1 if stepSize is not defined.
+    function increase() {
+        var _stepSize = stepSize === 0 ? 0.1 : stepSize
+        value += _stepSize
+    }
+
+    /* private */
     /* background */
     Loader {
         id: backgroundId
@@ -121,10 +156,11 @@ Item {
                 return 0.0
             }
             else {
-                if (_value % stepSize >= (stepSize / 2))
-                    return (Math.floor(_value / stepSize) + 1) * stepSize/to
+                var _stepSize = stepSize === 0 ? 0.1 : stepSize
+                if (_value % _stepSize >= (_stepSize / 2))
+                    return (Math.floor(_value / _stepSize) + 1) * _stepSize/to
                 else
-                    return Math.floor(_value / stepSize) * stepSize/to
+                    return Math.floor(_value / _stepSize) * _stepSize/to
             }
         }
 
