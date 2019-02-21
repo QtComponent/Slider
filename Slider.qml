@@ -12,13 +12,7 @@ Item {
     property real value
     property real stepSize: 0.1
     property int  orientation: Qt.Horizontal // [Qt.Horizontal | Qt.Vertical]
-    /** [read-only] position
-     * This property holds the logical position of the handle.
-     * The position is defined as a percentage of the control's size, scaled from 0.0 - 1.0.
-     * Unlike the value property, the position is continuously updated while the handle is dragged.
-     * For visualizing a slider, the right-from-left aware visualPosition should be used instead.
-     */
-    property real position: 0.0
+    property real position: 0.0 // note: [read-only]
     property bool pressed: false
 
     property Component handle: _private.defaultHandle
