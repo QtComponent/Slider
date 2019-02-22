@@ -2,7 +2,7 @@ import QtQuick 2.0
 import "../" as My
 
 Rectangle {
-    width: 640; height: 480
+    width: 320; height: 240
 
     Row {
         anchors.centerIn: parent
