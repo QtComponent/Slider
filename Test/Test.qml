@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 2.0
 import "../" as My
 
 Rectangle {
@@ -30,7 +30,7 @@ Rectangle {
 
                     /* available rectangle */
                     Rectangle {
-                        width:  slider2.value/slider2.to*parent.width
+                        width:  slider2.position*parent.width
                         height: parent.height
                         radius: parent.radius
                         color: "red"
@@ -57,7 +57,7 @@ Rectangle {
 
                     /* available rectangle */
                     Rectangle {
-                        width:  slider3.value/slider.to*parent.width
+                        width:  slider3.position*parent.width
                         height: parent.height
                         radius: parent.radius
                         color: "blue"
@@ -79,7 +79,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: parseInt(slider4.value)
+                        text: parseInt(slider4.position*slider4.to)
                         visible: slider4.pressed
                         color: slider4.pressed ? "white" : "black"
                     }
@@ -93,7 +93,7 @@ Rectangle {
 
                     /* available rectangle */
                     Rectangle {
-                        width:  slider4.value/slider4.to*parent.width
+                        width:  slider4.position*parent.width
                         height: parent.height
                         radius: parent.radius
                         color: "lightblue"
@@ -121,7 +121,7 @@ Rectangle {
 
                 /* available rectangle */
                 Rectangle {
-                    height: slider5.value/slider5.to*parent.height
+                    height: slider5.position*parent.height
                     width: parent.width
                     radius: parent.radius
                     color: "blue"

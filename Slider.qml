@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 2.0
 
 Item {
     id: root
@@ -42,13 +42,13 @@ Item {
     // Decreases the value by stepSize or 0.1 if stepSize is not defined.
     function decrease() {
         var _stepSize = stepSize === 0 ? 0.1 : stepSize
-        value -= _stepSize
+        position -= _stepSize
     }
 
     // Increases the value by stepSize or 0.1 if stepSize is not defined.
     function increase() {
         var _stepSize = stepSize === 0 ? 0.1 : stepSize
-        value += _stepSize
+        position += _stepSize
     }
 
     /* private */
@@ -71,32 +71,37 @@ Item {
         onPressed: root.pressed = true
         onReleased: {
             root.pressed = false
-            root.position = _private.adjustPosition(mouseArea)
+            root.value = root.position*to
         }
         onPositionChanged: {
-            if (root.pressed) {
-                value = _private.adjustValue(mouseArea)
-            }
+            root.position = _private.adjustPosition(mouseArea)
         }
         onClicked: {
-            value = _private.adjustValue(mouseArea)
+            root.position = _private.adjustPosition(mouseArea)
         }
     }
 
     onValueChanged: {
-        if (! root.pressed)
-            position = value/to
-
         if (value > to)
             value = to
 
         if (value < from)
             value = from
 
-        _private.setHandlePosition(value)
+        position = value/to
     }
 
-    Component.onCompleted: _private.setHandlePosition(value)
+    onPositionChanged: {
+        if (position < 0)
+            position = 0
+
+        if (position > 1)
+            position = 1
+
+        _private.setHandlePosition()
+    }
+
+    Component.onCompleted: _private.setHandlePosition()
 
     QtObject {
         id: _private
@@ -123,8 +128,8 @@ Item {
 
             /* available rectangle */
             Rectangle {
-                width: orientation === Qt.Horizontal ? value/to*parent.width : parent.width
-                height: orientation === Qt.Vertical ? value/to*parent.height : parent.height
+                width: orientation === Qt.Horizontal ? position*parent.width : parent.width
+                height: orientation === Qt.Vertical ? position*parent.height : parent.height
                 radius: parent.radius
                 color: "#21be2b"
             }
@@ -146,39 +151,30 @@ Item {
                 _rootValue = root.width
             }
 
-            var _value = (to * _mouseValue / _backgroundIdValue)
+            var _position = (_mouseValue / _backgroundIdValue)
 
-            if (_value >= to) {
-                return 1.0
-            }
-            else if (_value <= from) {
-                return 0.0
-            }
-            else {
-                if (stepSize === 0)
-                    return _value/to
+            if (stepSize === 0)
+                return _position
 
-                if (_value % stepSize >= (stepSize / 2))
-                    return (Math.floor(_value / stepSize) + 1) * stepSize/to
-                else
-                    return Math.floor(_value / stepSize) * stepSize/to
-            }
+            if (_position > (position + stepSize))
+                return position + stepSize
+
+            if (_position < (position - stepSize))
+                return position - stepSize
+
+            return position
         }
 
-        function adjustValue(mouseArea) {
-            return adjustPosition(mouseArea)*to
-        }
-
-        function getX(value) {
+        function getX(position) {
             if (orientation === Qt.Horizontal) {
-                if (((backgroundId.width*value/to) - handleId.width/2) <= 0) {
+                if (((backgroundId.width*position) - handleId.width/2) <= 0) {
                     return 0
                 }
-                else if (((backgroundId.width*value/to) + handleId.width/2) >= backgroundId.width) {
+                else if (((backgroundId.width*position) + handleId.width/2) >= backgroundId.width) {
                     return backgroundId.width - handleId.width
                 }
                 else {
-                    return ((backgroundId.width*value/to) - handleId.width/2)
+                    return ((backgroundId.width*position) - handleId.width/2)
                 }
             }
             else {
@@ -186,16 +182,16 @@ Item {
             }
         }
 
-        function getY(value) {
+        function getY(position) {
             if (orientation === Qt.Vertical) {
-                if (((backgroundId.height*value/to) - handleId.height/2) <= 0) {
+                if (((backgroundId.height*position) - handleId.height/2) <= 0) {
                     return 0
                 }
-                else if (((backgroundId.height*value/to) + handleId.height/2) >= backgroundId.height) {
+                else if (((backgroundId.height*position) + handleId.height/2) >= backgroundId.height) {
                     return backgroundId.height - handleId.height
                 }
                 else {
-                    return ((backgroundId.height*value/to) - handleId.height/2)
+                    return ((backgroundId.height*position) - handleId.height/2)
                 }
             }
             else {
@@ -203,9 +199,9 @@ Item {
             }
         }
 
-        function setHandlePosition(value) {
-            handleId.x = _private.getX(value)
-            handleId.y =  _private.getY(value)
+        function setHandlePosition() {
+            handleId.x = _private.getX(position)
+            handleId.y =  _private.getY(position)
         }
     }
 }
