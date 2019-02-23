@@ -141,14 +141,12 @@ Item {
             var _rootValue = 0
 
             if (orientation === Qt.Vertical) {
-                _backgroundIdValue = backgroundId.height
+                _backgroundIdValue = backgroundId.item.height
                 _mouseValue = mouseArea.mouseY
-                _rootValue = root.height
             }
             else {
-                _backgroundIdValue = backgroundId.width
+                _backgroundIdValue = backgroundId.item.width
                 _mouseValue = mouseArea.mouseX
-                _rootValue = root.width
             }
 
             var _position = (_mouseValue / _backgroundIdValue)
@@ -167,14 +165,14 @@ Item {
 
         function getX(position) {
             if (orientation === Qt.Horizontal) {
-                if (((backgroundId.width*position) - handleId.width/2) <= 0) {
+                if (((backgroundId.item.width*position) - handleId.width/2) <= 0) {
                     return 0
                 }
-                else if (((backgroundId.width*position) + handleId.width/2) >= backgroundId.width) {
-                    return backgroundId.width - handleId.width
+                else if (((backgroundId.item.width*position) + handleId.width/2) >= backgroundId.item.width) {
+                    return backgroundId.item.width - handleId.width
                 }
                 else {
-                    return ((backgroundId.width*position) - handleId.width/2)
+                    return ((backgroundId.item.width*position) - handleId.width/2)
                 }
             }
             else {
@@ -184,14 +182,14 @@ Item {
 
         function getY(position) {
             if (orientation === Qt.Vertical) {
-                if (((backgroundId.height*position) - handleId.height/2) <= 0) {
+                if (((backgroundId.item.height*position) - handleId.height/2) <= 0) {
                     return 0
                 }
-                else if (((backgroundId.height*position) + handleId.height/2) >= backgroundId.height) {
-                    return backgroundId.height - handleId.height
+                else if (((backgroundId.item.height*position) + handleId.height/2) >= backgroundId.item.height) {
+                    return backgroundId.item.height - handleId.height
                 }
                 else {
-                    return ((backgroundId.height*position) - handleId.height/2)
+                    return ((backgroundId.item.height*position) - handleId.height/2)
                 }
             }
             else {
