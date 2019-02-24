@@ -22,7 +22,7 @@ Item {
 
     // This property holds the orientation.
     // note: [Qt.Horizontal(default) | Qt.Vertical]
-    property int  orientation: Qt.Horizontal
+    property int orientation: Qt.Horizontal
 
     // This property holds the logical position of the handle.
     // The position is defined as a percentage of the control's size, scaled to 0.0 - 1.0.
@@ -67,7 +67,8 @@ Item {
 
     MouseArea {
         id: mouseArea
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
         onPressed: root.pressed = true
         onReleased: {
             root.pressed = false
@@ -109,8 +110,8 @@ Item {
         property real pathRadius: orientation === Qt.Vertical ? root.width * 2 / 15 : root.height * 2 / 15
         property real handleRadius: orientation === Qt.Vertical ? root.width * 3 / 5 : root.height * 3 / 5
         property real pathScale: 1
-        property real defaultWidth:  orientation === Qt.Horizontal ? 150 : 30
-        property real defaultHeight: orientation === Qt.Vertical ? 150 : 30
+        property real defaultWidth:  orientation === Qt.Horizontal ? backgroundId.item.width : 30
+        property real defaultHeight: orientation === Qt.Vertical ? backgroundId.item.height : 30
 
         property Component defaultHandle: Rectangle {
             width: _private.handleRadius
