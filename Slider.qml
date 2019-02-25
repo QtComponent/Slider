@@ -122,8 +122,8 @@ Item {
         }
 
         property Component defaultBackground: Rectangle {
-            width:  orientation === Qt.Horizontal ? root.width  : _private.pathRadius
-            height: orientation === Qt.Vertical   ? root.height : _private.pathRadius
+            width:  orientation === Qt.Horizontal ? 150  : _private.pathRadius
+            height: orientation === Qt.Vertical   ? 30 : _private.pathRadius
             radius: 2
             color: "#bdbebf"
 
