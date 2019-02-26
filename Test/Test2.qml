@@ -4,24 +4,6 @@ import "../" as My
 Rectangle {
     width: 320; height: 240
 
-    Rectangle {
-        anchors.verticalCenter: parent.verticalCenter
-        x: 30
-        width: 14
-        height: width
-        radius: width/2
-        color: mouseArea.position === 0 ? "#d5d5d5" : "#f52e06"
-
-        NumberAnimation on width { running: mouseArea.pressed; from: 14; to: 20; duration: 100 }
-        NumberAnimation on width { running: !mouseArea.pressed; from: 20; to: 14; duration: 100 }
-
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            drag.target: parent
-        }
-    }
-
     Row {
         anchors.centerIn: parent
         spacing: 20
@@ -56,6 +38,17 @@ Rectangle {
 
                             NumberAnimation on width { running: slider.pressed; from: 10; to: 14; duration: 100 }
                             NumberAnimation on width { running: !slider.pressed; from: 14; to: 10; duration: 100 }
+                        }
+
+                        Image {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottom: parent.top
+                            width: 0; height: width*0.9
+                            smooth: true
+                            source: "./blue.png"
+
+                            NumberAnimation on width { running: slider.pressed; from: 0; to: 32; duration: 100 }
+                            NumberAnimation on width { running: !slider.pressed; from: 32; to: 0; duration: 100 }
                         }
                     }
                 }
