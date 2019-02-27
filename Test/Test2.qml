@@ -54,6 +54,13 @@ Rectangle {
 
                                 NumberAnimation on width { running: slider.pressed; from: 0; to: 48; duration: 100 }
                                 NumberAnimation on width { running: !slider.pressed; from: 48; to: 0; duration: 100 }
+
+                                Text {
+                                    visible: slider.pressed
+                                    anchors.centerIn: parent
+                                    color: "white"
+                                    text: parseInt(slider.position * slider.to)
+                                }
                             }
                         }
                     }
